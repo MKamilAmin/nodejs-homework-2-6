@@ -6,21 +6,21 @@ const getAllContacts = async () => {
 };
 
 const getContactById = async (contactId) => {
-    return await Contact.findById({ _id: contactId });
+    return await Contact.findById(contactId);
 };
 
 const addContact = async (body) => {
-    return await Contact.create({ body });
+    return await Contact.create(body);
 };
 
 const updateContact = async (contactId, body) => {
-    return await Contact.findByIdAndUpdate({ _id: contactId }, body, {
+    return await Contact.findByIdAndUpdate(contactId, body, {
         new: true,
     });
 };
 
 const removeContact = async (contactId) => {
-    return await Contact.findByIdAndRemove({ _id: contactId });
+    return await Contact.findByIdAndDelete(contactId);
 };
 
 module.exports = {

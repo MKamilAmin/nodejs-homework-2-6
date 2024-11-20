@@ -7,6 +7,7 @@ const contactsSchema = new Schema({
     },
     email: {
         type: String,
+        match: [/.+@.+\..+/, "Please use a valid email address"],
     },
     phone: {
         type: String,
