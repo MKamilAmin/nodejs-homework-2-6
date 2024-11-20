@@ -8,9 +8,11 @@ const contactsSchema = new Schema({
     email: {
         type: String,
         match: [/.+@.+\..+/, "Please use a valid email address"],
+        required: true,
     },
     phone: {
         type: String,
+        required: true,
     },
     favorite: {
         type: Boolean,
