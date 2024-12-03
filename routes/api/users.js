@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../../models/schemaUser");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const auth = require("./contacts.js");
 
 const secret = process.env.AUTH_SECRET;
 
@@ -28,7 +29,7 @@ router.post("/signup", async (req, res, next) => {
     }
 });
 
-router.post("/login", async (req, res, next) => {
+router.post("/login", auth, async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
@@ -47,6 +48,8 @@ router.post("/login", async (req, res, next) => {
                 email: user.email,
             };
             const token = jwt.sign(payload, secret, { expiresIn: "1h" });
+            user.token = token;
+            await user.save();
             return res.status(200).json({
                 message: `Login succesful for ${email}`,
                 data: { token },
@@ -57,7 +60,38 @@ router.post("/login", async (req, res, next) => {
     }
 });
 
-router.get("/logout", async (req, res, next) => {});
-router.get("/current", async (req, res, next) => {});
+router.get("/logout", auth, async (req, res, next) => {
+    try {
+        const user = req.user;
+        user.token = null;
+        await user.save();
+
+        if (!user) {
+            return res.status(401).json({ message: "User not authorized!" });
+        }
+        return res.status(200).json({ message: "Logout successful" });
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.get("/current", auth, async (req, res, next) => {
+    try {
+        const user = req.user;
+
+        console.log("Current user:", user);
+        console.log("Received contact ID:", req.params.contactId);
+        console.log("Headers:", req.headers);
+        console.log("User in current route:", req.user);
+        if (!user) {
+            return res.status(401).json({ message: "User not authorized!" });
+        }
+        return res.status(200).json({
+            message: `Current user ${user.email}, subscription ${user.subscription}`,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 
 module.exports = router;
