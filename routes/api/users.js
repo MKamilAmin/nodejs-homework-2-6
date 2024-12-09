@@ -4,7 +4,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const auth = require("../../auth/auth");
 const gravatar = require("gravatar");
-const { processImage } = require("../../utils/avatars");
+const { processImage } = require("../../utils/avatar");
 const { uploadAvatarMiddleware } = require("../../utils/uploadAvatar-multer");
 
 const secret = process.env.AUTH_SECRET;
@@ -97,6 +97,7 @@ router.get("/current", auth, async (req, res, next) => {
 
 router.patch(
     "/avatars",
+    auth,
     uploadAvatarMiddleware.single("avatar"),
     (req, res, next) => {
         next();

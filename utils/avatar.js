@@ -7,8 +7,9 @@ const { isImageAndTransform } = require("./avatarPath");
 const storeImageDir = path.join(process.cwd(), "public/avatars");
 
 const processImage = async (req, res, next) => {
-    if (!req.file) {
-        return res.status(400).json({ message: "No file." });
+    const avatarFile = req.file;
+    if (!avatarFile) {
+        return res.status(400).json({ message: "No file uploaded." });
     }
 
     const { path: temporaryPath } = req.file;
@@ -33,11 +34,10 @@ const processImage = async (req, res, next) => {
         return res.status(400).json({ message: "File isn't a photo." });
     }
 
-    await User.findOneAndUpdate(
-        // { token: res.locals.user.token },
-        { avatarURL: `/avatars/${fileName}` }
-    );
-    res.status(200).json({ message: `avatarURL: /avatars/${fileName}` });
+    const userId = await User.findById(req.user._id);
+    const avatarURL = `/avatars/${fileName}`;
+    await User.findOneAndUpdate(userId, { avatarURL });
+    res.status(200).json({ message: `avatarURL: ${avatarURL}` });
 };
 
 module.exports = { processImage };
