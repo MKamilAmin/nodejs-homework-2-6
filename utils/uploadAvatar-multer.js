@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 const extensionWhiteList = [".jpg", ".jpeg", ".png", ".gif"];
 const mimetypeWhiteList = ["image/png", "image/jpg", "image/jpeg", "image/gif"];
 
-const uploadAvatar = multer({
+const uploadAvatarMiddleware = multer({
     storage,
     fileFilter: async (req, file, cb) => {
         const extension = path.extname(file.originalname).toLowerCase();
@@ -40,4 +40,4 @@ const uploadAvatar = multer({
     limits: { fileSize: 1024 * 1024 * 5 },
 });
 
-module.exports = { uploadAvatar };
+module.exports = { uploadAvatarMiddleware };
