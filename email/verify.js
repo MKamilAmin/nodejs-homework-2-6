@@ -23,7 +23,7 @@ const resendingVerifyEmail = async (req, res, next) => {
     if (!email) {
         return res
             .status(400)
-            .json({ message: "missing required field email" });
+            .json({ message: "Missing required field email" });
     }
     try {
         const user = await User.findOne({ email: email });
@@ -33,9 +33,9 @@ const resendingVerifyEmail = async (req, res, next) => {
                 .json({ message: "Verification has already been passed" });
         }
         await emailSender(
-            `<h1>Hello</h1><p>Verify your email by clicking the link below</p><a href="http://localhost:3000/api/users/verify/${user.verificationToken}">Verify link</a>`,
-            "Verify message",
-            user.email
+            user.email,
+            "Verify email",
+            `<h3>Hello!</h3><br><p>Please vrify your email.</p><a href="http://localhost:3000/api/users/verify/${user.verificationToken}">Click here</a>`
         );
         return res.status(200).json({ message: "Verification email sent" });
     } catch (error) {
